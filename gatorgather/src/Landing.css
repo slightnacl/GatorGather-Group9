@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat+Underline:ital,wght@0,100..900;1,100..900&display=swap');
+
+.flex-container {
+    display: flex;
+}
+
+.center-h {
+    justify-content: center;
+}
+
+.center-v {
+    align-content: center;
+}
+
+.header-bar {
+    position: sticky;
+    top: 0;
+    justify-content: space-between;
+    background-image: linear-gradient(rgba(231, 88, 34, 100), rgba(231, 88, 34, 0));
+    height: 160px;
+}
+
+#header-title {
+    font-family: "Jost", sans-serif;
+    font-size: 70px;
+    font-style: italic;
+    font-weight: 900;
+    color: white;
+    text-shadow: 1px 2px 1px rgb(16, 73, 148);
+    padding: 0px 0px 0px 40px;
+    margin: 0px 0px 20px 0px;
+}
+
+.header-button-box {
+    margin: 0px 100px 0px 0px;
+}
+
+.header-button {
+    font-family: "Jost", sans-serif;
+    font-size: 26px;
+    margin: 42px 20px 0px;
+    padding: 6px 40px;
+    border-radius: 40px;
+}
+
+#header-login-button {
+    color: rgb(14, 112, 237);
+    font-weight: 500;
+    border-width: 5px;
+    border-color: rgb(204, 204, 204);
+}
+
+#header-register-button {
+    color: white;
+    font-weight: 800;
+    background-color: rgb(255, 146, 106);
+    border-width: 5px;
+    border-color: rgb(231, 88, 34);
+}
+
+.front-image-box {
+    background-image: url(reitz-student-union-uf.jpeg);
+    position: relative;
+    z-index: -1;
+    bottom: 160px;
+    height: 960px;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    mask-image: linear-gradient(white, rgba(0, 0, 0,0 ) 100%, rgba(0, 0, 0, 0));
+}
+
+.main-body {
+    width: 100%;
+    background-color: white;
+}
+
+.grabber-text {
+    text-align: center;
+    position: relative;
+    bottom: 400px;
+    font-family: "Jost", sans-serif;
+    font-size: 50px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 2px 4px 1px rgb(16, 73, 148);
+    margin: 0px;
+}
+
+.footer-bar {
+    justify-content: space-between;
+    background-color: rgb(32, 32, 32);
+    padding: 20px 0px;
+}
