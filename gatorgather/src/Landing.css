@@ -1,143 +1,148 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Montserrat+Underline:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
-.flex-container {
-    display: flex;
+.landing-page {
+  font-family: "Jost", sans-serif;
+  color: #d1d5db;
+  background-color: #111827;
+  background-image: linear-gradient(to bottom, #1a2a45, #111827);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.center-h {
-    justify-content: center;
+.landing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #111827;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #374151;
+  height: 75px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.center-v {
-    align-content: center;
+.landing-brand {
+  font-family: "Jost", sans-serif;
+  font-size: 1.9em;
+  font-weight: 700;
+  font-style: italic;
+  color: #00529B;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.header-bar {
-    position: sticky;
-    top: 0;
-    justify-content: space-between;
-    background-image: linear-gradient(rgba(231, 88, 34, 100), rgba(231, 88, 34, 0));
-    height: 160px;
+.landing-brand:hover {
+    color: #FA4616;
 }
 
-#header-title {
-    position: absolute;
-    left: 320px;
-    font-family: "Jost", sans-serif;
-    font-size: 70px;
-    font-style: italic;
-    font-weight: 900;
-    color: white;
-    text-shadow: 1px 2px 1px rgb(16, 73, 148);
+.landing-brand span {
+    color: #FA4616;
+    transition: color 0.3s ease;
+}
+.landing-brand:hover span {
+    color: #00529B;
+}
+
+.landing-header-buttons {
+  display: flex;
+  gap: 35px;
 }
 
 .landing-button {
-    background-color: transparent;
-    border-color: transparent;
-    cursor: pointer;
+  font-family: "Jost", sans-serif;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
 }
 
-.header-button-box {
-    position: absolute;
-    right: 120px;
-    top: 50px;
-    width: 380px;
-    justify-content: space-between;
+.landing-login-button {
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
 }
 
-.header-button {
-    font-family: "Jost", sans-serif;
-    font-size: 26px;
-    padding: 6px 40px;
-    border-radius: 40px;
+.landing-login-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
 }
 
-#header-login-button {
-    color: rgb(14, 112, 237);
-    font-weight: 500;
-    border-width: 5px;
-    border-color: rgb(204, 204, 204);
-    cursor: pointer;
+.landing-register-button {
+  background-color: #FA4616;
+  color: #ffffff;
+  border: 2px solid #FA4616;
 }
 
-#header-register-button {
-    color: white;
-    font-weight: 800;
-    background-color: rgb(255, 146, 106);
-    border-width: 5px;
-    border-color: rgb(231, 88, 34);
-    cursor: pointer;
+.landing-register-button:hover {
+  background-color: #d83c0f;
+  border-color: #d83c0f;
 }
 
-.front-image-box {
-    position: relative;
-    z-index: -1;
-    top: -160px;
-    background: url(reitz-student-union-uf.jpeg) no-repeat center center;
-    background-size: cover;
-    height: 1000px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    mask-image: linear-gradient(white, rgba(0, 0, 0,0 ) 100%, rgba(0, 0, 0, 0));
+.landing-hero {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 40px;
+  background: linear-gradient(rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.9)), url(reitz-student-union-uf.jpeg) no-repeat center center;
+  background-size: cover;
+  min-height: calc(100vh - 75px);
 }
 
-.main-body {
-    width: 100%;
-    background-color: white;
-    flex-direction: column;
-    align-items: center;
+.hero-title {
+  font-size: 3.5em;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.grabber-text {
-    position: absolute;
-    top:55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    font-family: "Jost", sans-serif;
-    font-size: 50px;
-    font-weight: 700;
-    color: white;
-    text-shadow: 2px 4px 1px rgb(16, 73, 148);
-    padding: 0px;
-    margin: 0px;
+.hero-title .orange {
+  color: #FA4616;
+}
+.hero-title .blue {
+    color: #42A5F5;
 }
 
-.para-1 {
-    font-family: "Jost", sans-serif;
-    font-size: 40px;
-    font-weight: bold;
-    margin-left: 500px;
-    margin-right: 500px;
-    text-align: center;
+.hero-subtitle {
+  font-size: 1.5em;
+  font-weight: 400;
+  color: #e5e7eb;
+  max-width: 700px;
+  margin-bottom: 40px;
+  line-height: 1.6;
 }
 
-#grabber-large {
-    font-size: 200px;
-    color: rgb(231, 88, 34);
-    margin-top: 120px;
-    text-shadow: 4px 8px 1px rgb(16, 73, 148);
+.hero-cta-button {
+  font-size: 1.2em;
+  padding: 15px 40px !important;
+  background-color: #FA4616;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
 }
 
-#cta-register {
-    justify-content: center;
-    font-family: "Jost", sans-serif;
-    font-weight: bold;
-    font-size: 56px;
-    color: white;
-    width: 900px;
-    height: 100px;
-    border-width: 10px;
-    border-radius: 40px;
-    border-color: rgb(231, 88, 34);
-    background-color: rgb(255, 146, 106);
-    cursor: pointer;
+.hero-cta-button:hover {
+  background-color: #d83c0f;
 }
 
-.footer-bar {
-    justify-content: space-between;
-    background-color: rgb(32, 32, 32);
-    padding: 20px 0px;
+.landing-footer {
+  padding: 20px 40px;
+  background-color: #111827;
+  text-align: center;
+  font-size: 0.9em;
+  color: #6b7280;
+  border-top: 1px solid #374151;
 }

@@ -1,6 +1,5 @@
 // src/EventFeed.js
 import React from 'react';
-// Assumes styles are in Home.css
 
 function EventFeed() {
     return (
