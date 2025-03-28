@@ -198,10 +198,9 @@
   resize: vertical;
 }
 
-/* File upload styling remains the same */
 .file-upload-label {
     display: inline-block;
-    padding: 8px 12px; /* Slightly smaller */
+    padding: 8px 12px; 
     background-color: #4b5563;
     color: #e5e7eb;
     border-radius: 6px;
@@ -215,17 +214,16 @@
     background-color: #6b7280;
 }
 
-/* Form Actions (Save/Cancel buttons) */
 .profile-form .form-actions {
   display: flex;
   gap: 15px;
-  margin-top: 25px; /* More space above buttons */
+  margin-top: 25px; 
   padding-top: 20px;
-  border-top: 1px solid #4b5563; /* Separator above buttons */
+  border-top: 1px solid #4b5563; 
 }
 
 .profile-form button {
-  padding: 10px 20px; /* Adjusted button padding */
+  padding: 10px 20px; 
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -236,7 +234,7 @@
 }
 
 .save-button {
-  background-color: #FA4616; /* UF Orange */
+  background-color: #FA4616; 
   color: #ffffff;
 }
 .save-button:hover {
