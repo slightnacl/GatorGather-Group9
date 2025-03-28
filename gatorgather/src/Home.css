@@ -1,0 +1,62 @@
+/* src/Home.css */
+
+.home-container {
+  padding: 40px;
+  background-color: #1f2937; /* Dark grey-blue content background */
+  flex-grow: 1;
+  max-width: 1200px;
+  margin: 30px auto;
+  border-radius: 10px;
+  /* No shadow needed if body is dark, use border if desired */
+  /* border: 1px solid #374151; */
+}
+
+.dashboard-title {
+  font-family: "Jost", sans-serif;
+  color: #e5e7eb; /* Light text for title */
+  font-size: 2.2em;
+  font-weight: 600;
+  margin-bottom: 30px;
+  border-bottom: 3px solid #FA4616; /* UF Orange accent */
+  padding-bottom: 15px;
+}
+
+/* Styling for Placeholder Components */
+.placeholder-card {
+  background-color: #374151; /* Slightly lighter dark cards */
+  border: 1px solid #4b5563; /* Subtle border for separation */
+  border-radius: 8px;
+  padding: 40px;
+  margin-bottom: 30px;
+  /* Remove box-shadow for dark mode, border provides separation */
+  /* box-shadow: 0 2px 8px rgba(0, 21, 71, 0.06); */
+  font-family: "Jost", sans-serif;
+  color: #9ca3af; /* Muted light grey text */
+  font-size: 1.1em;
+  text-align: center;
+  transition: transform 0.3s ease, border-color 0.3s ease; /* Add border-color transition */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Optional hover effect for cards in dark mode */
+.placeholder-card:hover {
+  transform: translateY(-3px); /* Subtle lift */
+  border-color: #6b7280; /* Slightly lighter border on hover */
+}
+
+.placeholder-icon {
+  font-size: 2.5em;
+  margin-bottom: 15px;
+  color: #6b7280; /* Icon color */
+}
+
+.map-placeholder {
+  min-height: 350px;
+}
+
+.feed-placeholder {
+  min-height: 200px;
+}
