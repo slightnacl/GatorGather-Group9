@@ -27,18 +27,28 @@
     font-weight: 900;
     color: white;
     text-shadow: 1px 2px 1px rgb(16, 73, 148);
-    padding: 0px 0px 0px 40px;
-    margin: 0px 0px 20px 0px;
+}
+
+.landing-button {
+    position: absolute;
+    left: 80px;
+    top: 20px;
+    background-color: transparent;
+    border-color: transparent;
+    cursor: pointer;
 }
 
 .header-button-box {
-    margin: 0px 100px 0px 0px;
+    position: absolute;
+    right: 120px;
+    top: 50px;
+    width: 15%;
+    justify-content: space-between;
 }
 
 .header-button {
     font-family: "Jost", sans-serif;
     font-size: 26px;
-    margin: 42px 20px 0px;
     padding: 6px 40px;
     border-radius: 40px;
 }
@@ -48,6 +58,7 @@
     font-weight: 500;
     border-width: 5px;
     border-color: rgb(204, 204, 204);
+    cursor: pointer;
 }
 
 #header-register-button {
@@ -56,36 +67,74 @@
     background-color: rgb(255, 146, 106);
     border-width: 5px;
     border-color: rgb(231, 88, 34);
+    cursor: pointer;
 }
 
 .front-image-box {
-    background-image: url(reitz-student-union-uf.jpeg);
     position: relative;
     z-index: -1;
-    bottom: 160px;
-    height: 960px;
-    width: 100%;
-    background-repeat: no-repeat;
+    top: -160px;
+    background: url(reitz-student-union-uf.jpeg) no-repeat center center;
     background-size: cover;
-    background-position: center;
+    height: 1000px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     mask-image: linear-gradient(white, rgba(0, 0, 0,0 ) 100%, rgba(0, 0, 0, 0));
 }
 
 .main-body {
     width: 100%;
     background-color: white;
+    flex-direction: column;
+    align-items: center;
 }
 
 .grabber-text {
+    position: absolute;
+    top:55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
-    position: relative;
-    bottom: 400px;
     font-family: "Jost", sans-serif;
     font-size: 50px;
     font-weight: 700;
     color: white;
     text-shadow: 2px 4px 1px rgb(16, 73, 148);
+    padding: 0px;
     margin: 0px;
+}
+
+.para-1 {
+    font-family: "Jost", sans-serif;
+    font-size: 40px;
+    font-weight: bold;
+    margin-left: 500px;
+    margin-right: 500px;
+    text-align: center;
+}
+
+#grabber-large {
+    font-size: 200px;
+    color: rgb(231, 88, 34);
+    margin-top: 120px;
+    text-shadow: 4px 8px 1px rgb(16, 73, 148);
+}
+
+#cta-register {
+    justify-content: center;
+    font-family: "Jost", sans-serif;
+    font-weight: bold;
+    font-size: 56px;
+    color: white;
+    width: 900px;
+    height: 100px;
+    border-width: 10px;
+    border-radius: 40px;
+    border-color: rgb(231, 88, 34);
+    background-color: rgb(255, 146, 106);
+    cursor: pointer;
 }
 
 .footer-bar {
