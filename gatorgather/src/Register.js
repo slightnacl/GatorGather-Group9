@@ -8,23 +8,29 @@ function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
-    const [error, setError] = useState("");
+    const [errorText, setErrorText] = useState("");
     const navigate = useNavigate();
+
+    const passwordValidation = (password) => {
+        const digitsCheck = password.match(/\d/g) || [];
+        // console.log(digitsCheck.length);
+        // console.log(password.length);
+        // console.log(digitsCheck.length >=2 && password.length >= 8)
+        return (digitsCheck.length >=2 && password.length >= 8);
+    }
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        setErrorText("");
         
         if (!email.endsWith("@ufl.edu")) {
-            setError("E-mail address must end in @ufl.edu");
+            setErrorText("E-mail address must end in @ufl.edu");
             return;
-        }
-        const countNumbers = (str) => (String(str).match(/\d/g) || []).length;
-        if (password.length < 8 || countNumbers(password < 2)) {
-            setError("Password must be at least 8 characters long and contain 2 numbers");
+        } else if (password !== passwordConfirm) {
+            setErrorText("Passwords do not match");
             return;
-        }
-        if (password !== passwordConfirm) {
-            setError("Passwords do not match");
+        } else if (!passwordValidation(password)) {
+            setErrorText("Password must be at least 8 characters long and contain 2 numbers");
             return;
         }
 
@@ -32,15 +38,18 @@ function Register() {
             await createUserWithEmailAndPassword(auth, email, password);
             alert("Registration successful! You may log in.");
             navigate("/login");
-        } catch (err) {
-            setError(err.message);
+        } catch (error) {
+            console.log(error);
+            if (error.code === "auth/email-already-in-use") {
+                setErrorText("E-mail already in use");
+            }
         }
     };
 
     return (
         <div>
             <div class="header-bar">
-            <Link to = "/"><button class="center-v landing-button" id="header-title">Gator<span style = {{ color: "rgb(14, 112, 237)"}}>Gather</span></button></Link>
+            <Link to = "/"><button class="center-v landing-button" id="header-title-reg">Gator<span style = {{ color: "rgb(14, 112, 237)"}}>Gather</span></button></Link>
             </div>
             <div class="flex-container registration-container">
                 <h2 class="welcome-flair" style={{marginBottom: 0}}>Welcome to GatorGather!</h2>
@@ -67,7 +76,7 @@ function Register() {
                     placeholder = "Re-enter your password"                
                 />
                 <button id="register-button" type = "submit" onClick={handleRegister}>Register</button>
-                {error && <p>{error}</p>}
+                {errorText && <p>{errorText}</p>}
             </div>
         </div>
     );
