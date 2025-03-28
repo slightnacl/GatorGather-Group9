@@ -1,0 +1,174 @@
+/* src/NavBar.css */
+
+.navbar {
+  background-color: #111827; /* Dark background for navbar */
+  padding: 0 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 75px;
+  box-sizing: border-box;
+  border-bottom: 2px solid #374151; /* Subtle border */
+}
+
+.navbar-brand {
+  font-family: "Jost", sans-serif;
+  font-size: 1.9em;
+  font-weight: 700;
+  font-style: italic;
+  /* Keep UF Blue for the brand, ensure it's readable */
+  /* If too dark, consider a lighter blue variant or white */
+  color: #00529B; /* Slightly lighter UF blue potentially */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #FA4616; /* UF Orange on hover */
+}
+
+.navbar-brand span {
+    color: #FA4616; /* UF Orange */
+    transition: color 0.3s ease;
+}
+.navbar-brand:hover span {
+    color: #00529B; /* UF Blue on hover */
+}
+
+.navbar-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #d1d5db; /* Light grey text for links */
+  font-family: "Jost", sans-serif;
+  font-weight: 500;
+  font-size: 1.1em;
+  padding: 8px 15px;
+  border-radius: 6px;
+  position: relative;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 50%;
+  background-color: #FA4616; /* UF Orange underline */
+  transition: all 0.3s ease-out;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover {
+  color: #ffffff; /* White text on hover */
+}
+
+.nav-link:hover::after {
+   width: 100%;
+}
+
+/* Active link style */
+.nav-link.active {
+    color: #FA4616; /* UF Orange for active link */
+    font-weight: 700;
+}
+.nav-link.active::after {
+     width: 100%;
+     background-color: #FA4616;
+}
+
+.navbar-right {
+    position: relative;
+}
+
+.account-icon {
+    /* Use a lighter background for the icon button or keep UF colors */
+    background-color: #374151; /* Mid-dark grey */
+    color: #e5e7eb; /* Light text */
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Jost", sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid #4b5563; /* Slightly lighter border */
+    font-size: 1.3em;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.account-icon:hover {
+    background-color: #FA4616; /* UF Orange background on hover */
+    border-color: #ffffff; /* White border */
+    color: #ffffff; /* White text */
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: #1f2937; /* Dark background for dropdown */
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark bg */
+    min-width: 180px;
+    z-index: 1001;
+    overflow: hidden;
+    border: 1px solid #4b5563; /* Border */
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeInDown 0.2s ease-out forwards;
+}
+
+/* Keyframes remain the same */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #d1d5db; /* Light text */
+    font-family: "Jost", sans-serif;
+    font-size: 1.05em;
+    white-space: nowrap;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #374151; /* Slightly lighter dark hover */
+    color: #ffffff; /* White text on hover */
+}
+
+.dropdown-item.logout {
+    color: #f87171; /* Lighter red for logout in dark mode */
+    border-top: 1px solid #4b5563; /* Separator */
+}
+
+.dropdown-item.logout:hover {
+    background-color: #4b5563; /* Darker hover for logout */
+    color: #fecaca; /* Even lighter red text */
+}
