@@ -95,8 +95,8 @@
     background-color: #374151; /* Mid-dark grey */
     color: #e5e7eb; /* Light text */
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    width: 55px;
+    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,18 +115,21 @@
 }
 
 .dropdown-menu {
+    display: flex;
+    flex-direction: row;
     position: absolute;
-    top: 60px;
-    right: 0;
+    height: 55px;
+    top: 0%;
+    right: 110%;
+    transform: translateY(-0%);
     background-color: #1f2937; /* Dark background for dropdown */
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Adjusted shadow for dark bg */
-    min-width: 180px;
+    min-width: auto;
     z-index: 1001;
     overflow: hidden;
     border: 1px solid #4b5563; /* Border */
     opacity: 0;
-    transform: translateY(-10px);
     animation: fadeInDown 0.2s ease-out forwards;
 }
 
@@ -134,11 +137,11 @@
 @keyframes fadeInDown {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateX(10px);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateX(0);
     }
 }
 
@@ -165,7 +168,7 @@
 
 .dropdown-item.logout {
     color: #f87171; /* Lighter red for logout in dark mode */
-    border-top: 1px solid #4b5563; /* Separator */
+    border-left: 1px solid #4b5563; /* Separator */
 }
 
 .dropdown-item.logout:hover {

@@ -1,4 +1,15 @@
-// src/NavBar.js
+
+// THIS GOES AFTER THE GATORGATHER DIV (may remove, commented out for now)
+/*
+<div className="navbar-links">
+<Link to="/home" className="nav-link">Home</Link>
+<Link to="/events" className="nav-link">Events</Link>
+<Link to="/map" className="nav-link">Map</Link>
+<Link to="/create-event" className="nav-link">Create Event</Link>
+{// Profile link is now in the dropdown }
+</div>
+*/
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Use NavLink if you want active styling
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
@@ -63,13 +74,7 @@ function NavBar() {
             <Link to="/home" className="navbar-brand">
                 Gator<span>Gather</span>
             </Link>
-            <div className="navbar-links">
-                <Link to="/home" className="nav-link">Home</Link>
-                <Link to="/events" className="nav-link">Events</Link>
-                <Link to="/map" className="nav-link">Map</Link>
-                <Link to="/create-event" className="nav-link">Create Event</Link>
-                {/* Profile link is now in the dropdown */}
-            </div>
+            
             <div className="navbar-right" ref={dropdownRef}>
                 <button onClick={toggleDropdown} className="account-icon">
                     {userInitial} {/* Display first letter of email or ? */}

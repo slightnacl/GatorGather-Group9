@@ -62,7 +62,7 @@ function EventMap() {
   return (
     <div
       ref={mapRef}
-      style={{ height: '400px', width: '100%', borderRadius: '12px', marginBottom: '20px' }}
+      style={{ height: '50vh', width: '100%', borderRadius: '12px', marginBottom: '20px' }}
     />
   );
 }

@@ -1,0 +1,21 @@
+.event-details {
+    margin-top: 16px;
+}
+  
+.event-banner {
+    background-color: #f1623b;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 12px;
+    border-radius: 8px;
+}
+  
+.event-body {
+    margin-top: 10px;
+    padding: 12px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+  

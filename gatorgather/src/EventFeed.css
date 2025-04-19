@@ -1,0 +1,68 @@
+.event-feed-sidebar {
+    position: fixed;
+    top: 75px;
+    right: 0;
+    width: 20%;
+    min-width: 200px;
+    background-color: #1f2937;
+    padding: 0px;
+    border-left: 2px solid #374151;
+    display: flex;
+    flex-direction: column;
+    color: #d1d5db;
+    height: 100%;
+    box-sizing: border-box;
+}
+  
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 15px;
+}
+  
+.tab-button {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #d1d5db;
+    font-family: "Jost", sans-serif;
+    font-size: 1.3em;
+    font-weight: 500;
+    padding: 10px;
+    cursor: pointer;
+    transition: color 0.2s ease, border-bottom 0.2s ease;
+    border-bottom: 2px solid transparent;
+}
+  
+.tab-button.active {
+    color: #FA4616;
+    border-bottom: 2px solid #FA4616;
+}
+  
+.tab-content {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+  
+.search-input {
+    width: 90%;
+    margin: auto;
+    display: block;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #4b5563;
+    background-color: #111827;
+    color: #f9fafb;
+    font-family: "Jost", sans-serif;
+}
+
+.tab-header {
+    text-align: center;
+    padding: 20px 10px;
+    font-family: "Jost", sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #e5e7eb;
+    background-color: #1f2937;
+    border-bottom: 1px solid #374151;
+}
