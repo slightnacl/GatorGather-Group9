@@ -1,329 +1,503 @@
-// src/Profile.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, deleteDoc, updateDoc, serverTimestamp, Timestamp, orderBy } from "firebase/firestore";
 import NavBar from './NavBar';
-import './Profile.css'; // Ensure CSS is imported
+import './Profile.css';
+
+function EditEventModal({ event, isOpen, onClose, onSave }) {
+    const [formData, setFormData] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [modalError, setModalError] = useState('');
+
+    useEffect(() => {
+        if (event) {
+            let formattedTime = '';
+            if (event.meetingTime instanceof Timestamp) {
+                const date = event.meetingTime.toDate();
+                const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+                const localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, 16);
+                formattedTime = localISOTime;
+            } else if (typeof event.meetingTime === 'string') {
+                try {
+                     const date = new Date(event.meetingTime);
+                     const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+                     const localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, 16);
+                     formattedTime = localISOTime;
+                } catch {
+                     formattedTime = event.meetingTime.slice(0,16);
+                }
+            }
+
+            setFormData({
+                clubName: event.clubName || '',
+                meetingPurpose: event.meetingPurpose || '',
+                location: event.location || '',
+                meetingTime: formattedTime,
+                details: event.details || '',
+                tags: event.tags || [],
+            });
+            setModalError('');
+        }
+    }, [event]);
+
+     const categorizedTags = {
+        'Event Type': ['Study Group', 'Club Meeting', 'Social Event', 'Workshop/Seminar', 'Volunteer Opportunity', 'Guest Speaker', 'Performance/Show', 'Sports/Recreation'],
+        'Event Format': ['In-Person', 'Online/Virtual', 'Hybrid'],
+        'Academic Focus': ['College of Agricultural and Life Sciences', 'College of the Arts', 'Warrington College of Business', 'College of Dentistry', 'College of Design, Construction and Planning', 'College of Education', 'Herbert Wertheim College of Engineering', 'College of Health and Human Performance', 'College of Journalism and Communications', 'Levin College of Law', 'College of Liberal Arts and Sciences', 'College of Medicine', 'College of Nursing', 'College of Pharmacy', 'College of Public Health and Health Professions', 'College of Veterinary Medicine', 'General Interest'],
+        'Miscellaneous': ['Free Food', 'Networking Opportunity', 'Skill Development', 'Fundraiser']
+    };
+    const allAvailableTags = Object.values(categorizedTags).flat().sort();
+
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+     const handleTagChange = (e) => {
+        const { value, checked } = e.target;
+        setFormData(prev => {
+            const currentTags = prev.tags || [];
+            const newTags = checked
+                ? [...currentTags, value]
+                : currentTags.filter(tag => tag !== value);
+            return { ...prev, tags: newTags };
+        });
+    };
+
+    const handleSave = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setModalError('');
+        try {
+            await onSave(event.id, formData);
+            onClose();
+        } catch (err) {
+            console.error("Error saving event:", err);
+            setModalError('Failed to save changes. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (!isOpen || !event) return null;
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <h2>Edit Event</h2>
+                <form onSubmit={handleSave}>
+                     <div>
+                        <label htmlFor="edit-clubName">Club Name</label>
+                        <input type="text" id="edit-clubName" name="clubName" value={formData.clubName} onChange={handleChange} required disabled={loading} />
+                    </div>
+                     <div>
+                        <label htmlFor="edit-meetingPurpose">Meeting Purpose</label>
+                        <input type="text" id="edit-meetingPurpose" name="meetingPurpose" value={formData.meetingPurpose} onChange={handleChange} required disabled={loading} />
+                    </div>
+                     <div>
+                        <label htmlFor="edit-location">Location</label>
+                        <input type="text" id="edit-location" name="location" value={formData.location} onChange={handleChange} required disabled={loading} />
+                    </div>
+                     <div>
+                        <label htmlFor="edit-meetingTime">Time</label>
+                        <input type="datetime-local" id="edit-meetingTime" name="meetingTime" value={formData.meetingTime} onChange={handleChange} required disabled={loading} />
+                    </div>
+                    <div>
+                        <label htmlFor="edit-details">Additional Details</label>
+                        <textarea id="edit-details" name="details" value={formData.details} onChange={handleChange} rows="3" disabled={loading}></textarea>
+                    </div>
+
+                    <div className="tags-section modal-tags-section">
+                         <label className="tags-main-label">Tags</label>
+                         <div className="modal-tags-container">
+                            {allAvailableTags.map(tag => (
+                                <div key={`edit-${tag}`} className="tag-checkbox-item modal-tag-item">
+                                    <input
+                                        type="checkbox"
+                                        id={`edit-tag-${tag.replace(/\s+/g, '-')}`}
+                                        value={tag}
+                                        checked={formData.tags?.includes(tag) || false}
+                                        onChange={handleTagChange}
+                                        disabled={loading}
+                                    />
+                                    <label htmlFor={`edit-tag-${tag.replace(/\s+/g, '-')}`}>{tag}</label>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+
+                    {modalError && <p className="modal-error">{modalError}</p>}
+
+                    <div className="modal-actions">
+                        <button type="submit" className="modal-save-button" disabled={loading}>
+                            {loading ? 'Saving...' : 'Save Changes'}
+                        </button>
+                        <button type="button" className="modal-cancel-button" onClick={onClose} disabled={loading}>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
 
 function Profile() {
     const [profileData, setProfileData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
+    const [profileLoading, setProfileLoading] = useState(true);
+    const [profileError, setProfileError] = useState(null);
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
 
-    // State for form inputs during editing
-    const [editName, setEditName] = useState(''); // Added state for name
+    const [editName, setEditName] = useState('');
     const [editMajor, setEditMajor] = useState('');
     const [editBio, setEditBio] = useState('');
-    const [editImageFile, setEditImageFile] = useState(null);
-    const [editImagePreview, setEditImagePreview] = useState(null);
-    const [isSaving, setIsSaving] = useState(false);
+    const [editEmoji, setEditEmoji] = useState(''); // State for emoji
+    const [isSavingProfile, setIsSavingProfile] = useState(false);
 
-    const fileInputRef = useRef(null);
+    const [userEvents, setUserEvents] = useState([]);
+    const [eventsLoading, setEventsLoading] = useState(true);
+    const [eventsError, setEventsError] = useState(null);
+
+    const [editingEvent, setEditingEvent] = useState(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const auth = getAuth();
+    const db = getFirestore();
+    const user = auth.currentUser;
 
     useEffect(() => {
         const fetchProfileData = async () => {
-            setLoading(true); // Ensure loading state is true at start
-            setError(null); // Clear previous errors
-            const auth = getAuth();
-            const user = auth.currentUser;
-
             if (user) {
-                const db = getFirestore();
+                setProfileLoading(true);
+                setProfileError(null);
                 const profileDocRef = doc(db, "users", user.uid);
-
                 try {
                     const docSnap = await getDoc(profileDocRef);
                     let data;
                     if (docSnap.exists()) {
                         data = docSnap.data();
                         setProfileData(data);
-                        // Initialize edit state here only after data is fetched
-                        setEditName(data.name || ''); // Initialize name
+                        setEditName(data.name || user.displayName || '');
                         setEditMajor(data.major || '');
                         setEditBio(data.bio || '');
-                        setEditImagePreview(data.profilePictureUrl || null);
+                        setEditEmoji(data.profileEmoji || '👤'); // Default emoji if none set
                     } else {
-                        console.log("No profile document found for this user.");
-                        // Set default structure if no profile exists
-                        const defaultData = { name: '', major: '', bio: '', profilePictureUrl: null };
+                         const defaultEmoji = '👤';
+                        const defaultData = { name: user.displayName || '', major: '', bio: '', profileEmoji: defaultEmoji };
                         setProfileData(defaultData);
-                        setEditName(''); // Initialize name
+                        setEditName(user.displayName || '');
                         setEditMajor('');
                         setEditBio('');
-                        setEditImagePreview(null);
+                        setEditEmoji(defaultEmoji);
                     }
                 } catch (err) {
                     console.error("Error fetching profile data:", err);
-                    setError("Failed to load profile. Please try again later.");
+                    setProfileError("Failed to load profile. Please try again later.");
                 } finally {
-                    setLoading(false);
+                    setProfileLoading(false);
                 }
             } else {
-                setError("User not authenticated.");
-                setLoading(false);
+                setProfileError("User not authenticated.");
+                setProfileLoading(false);
             }
         };
-
         fetchProfileData();
-    }, []);
+    }, [user, db]);
 
-    // --- Edit Mode Handlers ---
+     const fetchUserEvents = useCallback(async () => {
+        if (user) {
+            setEventsLoading(true);
+            setEventsError(null);
+            try {
+                const eventsRef = collection(db, "events");
+                const q = query(eventsRef, where("createdBy", "==", user.uid), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                const fetchedEvents = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setUserEvents(fetchedEvents);
+            } catch (err) {
+                console.error("Error fetching user events:", err);
+                setEventsError("Failed to load your events.");
+            } finally {
+                setEventsLoading(false);
+            }
+        } else {
+             setEventsLoading(false);
+             setEventsError("User not logged in.");
+        }
+    }, [user, db]);
+
+    useEffect(() => {
+        fetchUserEvents();
+    }, [fetchUserEvents]);
+
 
     const handleEditToggle = () => {
         if (!profileData) return;
-
-        if (!isEditing) {
-            // Entering edit mode: Reset form fields from potentially stale profileData state
+        if (!isEditingProfile) {
             setEditName(profileData.name || '');
             setEditMajor(profileData.major || '');
             setEditBio(profileData.bio || '');
-            setEditImagePreview(profileData.profilePictureUrl || null);
-            setEditImageFile(null);
-            setError(null); // Clear errors when entering edit mode
-        } else {
-            // Exiting edit mode (Cancel): Reset preview if a file was selected but not saved
-             setEditImagePreview(profileData.profilePictureUrl || null);
+            setEditEmoji(profileData.profileEmoji || '👤');
+            setProfileError(null);
         }
-        setIsEditing(!isEditing);
+        setIsEditingProfile(!isEditingProfile);
     };
 
-     const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setEditImageFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setEditImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-     const triggerFileInput = () => {
-        if (isEditing) { // Only allow triggering file input in edit mode
-             fileInputRef.current.click();
-        }
-     };
-
-    const handleSave = async () => {
-        const auth = getAuth();
-        const user = auth.currentUser;
+    const handleProfileSave = async () => {
         if (!user) {
-            setError("Authentication error. Please log in again.");
+            setProfileError("Authentication error.");
             return;
         }
+        setIsSavingProfile(true);
+        setProfileError(null);
 
-        setIsSaving(true);
-        setError(null);
-
-        // Use existing image URL unless a new file is uploaded
-        let imageUrl = isEditing ? editImagePreview : profileData?.profilePictureUrl; // Start with preview if editing, else current data
-        if (editImageFile) { // Check if a NEW file was selected for upload
-             imageUrl = profileData?.profilePictureUrl; // Default to old URL in case upload fails
-            try {
-                const storage = getStorage();
-                const imageRef = ref(storage, `profilePictures/${user.uid}/${editImageFile.name}`);
-                console.log(`Uploading to: ${imageRef.fullPath}`);
-                const snapshot = await uploadBytes(imageRef, editImageFile);
-                imageUrl = await getDownloadURL(snapshot.ref); // Get NEW URL after successful upload
-                console.log(`Image uploaded: ${imageUrl}`);
-            } catch (uploadError) {
-                 console.error("Error uploading image:", uploadError);
-                 setError("Failed to upload image. Profile text data might still be saved.");
-                 // Decide if you want to proceed saving text data or stop
-                 // For now, we'll let it proceed to save text data
-            }
-        } else if (isEditing && !editImagePreview && profileData?.profilePictureUrl) {
-             // Handle case where user clears the image preview in edit mode (optional: set to null or don't change)
-             // For now, we assume clearing preview means keep the old URL, unless specifically set to null
-             imageUrl = profileData.profilePictureUrl;
+        // Validate emoji input (basic: ensure it's not empty, could add more complex checks)
+        if (!editEmoji.trim()) {
+             setProfileError("Please enter a profile emoji.");
+             setIsSavingProfile(false);
+             return;
         }
 
-        // Prepare data, ensuring imageUrl reflects the potentially new URL
+
         const updatedData = {
-            name: editName, // Save name
-            major: editMajor,
-            bio: editBio,
-            profilePictureUrl: imageUrl // Use the final imageUrl (new or old)
+            name: editName.trim(),
+            major: editMajor.trim(),
+            bio: editBio.trim(),
+            profileEmoji: editEmoji.trim() // Save the emoji
         };
 
         try {
-            // Update Firestore
-            const db = getFirestore();
             const profileDocRef = doc(db, "users", user.uid);
-            await setDoc(profileDocRef, updatedData, { merge: true }); // Use merge to avoid overwriting other fields
-            console.log("Profile updated successfully in Firestore.");
-
-            // Update local state and exit edit mode
-            setProfileData(updatedData);
-            setIsEditing(false);
-            setEditImageFile(null); // Clear selected file state after successful save
-             // Ensure preview reflects the saved state
-            setEditImagePreview(updatedData.profilePictureUrl);
-
+            // Use setDoc with merge: true to create or update
+            await setDoc(profileDocRef, updatedData, { merge: true });
+            setProfileData(prevData => ({ ...prevData, ...updatedData })); // Update local state
+            setIsEditingProfile(false);
         } catch (firestoreError) {
-            console.error("Error saving profile text data:", firestoreError);
-            setError("Failed to save profile data. Please try again.");
+            console.error("Error saving profile data:", firestoreError);
+            setProfileError("Failed to save profile data.");
         } finally {
-            setIsSaving(false);
+            setIsSavingProfile(false);
         }
     };
 
-    // --- Render Logic ---
+    const handleDeleteEvent = async (eventId) => {
+        if (window.confirm("Are you sure you want to delete this event permanently?")) {
+            setEventsLoading(true);
+            try {
+                const eventDocRef = doc(db, "events", eventId);
+                await deleteDoc(eventDocRef);
+                setUserEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
+            } catch (err) {
+                console.error("Error deleting event:", err);
+                setEventsError("Failed to delete event. Please try again.");
+            } finally {
+                setEventsLoading(false);
+            }
+        }
+    };
 
-    // Display Loading state
-    if (loading) {
+    const handleCancelEvent = async (eventId, currentStatus) => {
+         const newStatus = currentStatus === 'cancelled' ? 'active' : 'cancelled';
+         const confirmationMessage = newStatus === 'cancelled'
+            ? "Are you sure you want to mark this event as cancelled?"
+            : "Are you sure you want to reactivate this event?";
+
+         if (window.confirm(confirmationMessage)) {
+            setEventsLoading(true);
+            try {
+                const eventDocRef = doc(db, "events", eventId);
+                await updateDoc(eventDocRef, {
+                    status: newStatus
+                });
+                 setUserEvents(prevEvents => prevEvents.map(event =>
+                    event.id === eventId ? { ...event, status: newStatus } : event
+                ));
+             } catch (err) {
+                 console.error("Error updating event status:", err);
+                 setEventsError("Failed to update event status.");
+            } finally {
+                setEventsLoading(false);
+            }
+        }
+    };
+
+    const handleOpenEditModal = (event) => {
+        setEditingEvent(event);
+        setIsEditModalOpen(true);
+    };
+
+    const handleCloseEditModal = () => {
+        setIsEditModalOpen(false);
+        setEditingEvent(null);
+    };
+
+    const handleSaveChanges = async (eventId, updatedData) => {
+        setEventsLoading(true);
+         try {
+             const eventDocRef = doc(db, "events", eventId);
+             await updateDoc(eventDocRef, {
+                ...updatedData,
+                updatedAt: serverTimestamp()
+             });
+             await fetchUserEvents();
+         } catch (err) {
+             console.error("Error saving changes:", err);
+             throw err;
+         } finally {
+            setEventsLoading(false);
+        }
+     };
+
+    const formatDateTime = (timeInput) => {
+        if (!timeInput) return 'Time not specified';
+        let date;
+        if (timeInput instanceof Timestamp) {
+            date = timeInput.toDate();
+        } else if (typeof timeInput === 'string') {
+            date = new Date(timeInput);
+        } else {
+            return 'Invalid time format';
+        }
+
+        try {
+             return date.toLocaleString('en-US', {
+                dateStyle: 'medium',
+                timeStyle: 'short'
+            });
+        } catch (e) {
+             console.error("Error formatting date:", e);
+            return typeof timeInput === 'string' ? timeInput : 'Invalid time';
+        }
+    };
+
+    if (profileLoading) {
         return (
             <div>
                 <NavBar />
-                <div className="profile-container">
-                    <div className="profile-loading">Loading Profile...</div>
-                </div>
+                <div className="profile-container profile-loading">Loading Profile...</div>
             </div>
         );
     }
-
-     // Display Error state (only when not editing, or handle within form)
-    if (error && !isEditing) {
-         return (
-            <div>
-                <NavBar />
-                <div className="profile-container">
-                     {/* Show Edit button even on error if data exists */}
-                     {profileData && <button onClick={handleEditToggle} className="edit-profile-button">Edit Profile</button>}
-                    <div className="profile-error">{error}</div>
-                     {/* Optionally display existing data even if there was an error */}
-                </div>
-            </div>
-        );
-    }
-
-    // Display No Data state (should ideally be covered by default data now)
-    if (!profileData && !loading) {
-         return (
-            <div>
-                <NavBar />
-                <div className="profile-container">
-                    <div className="profile-error">Profile data could not be loaded or initialized.</div>
-                </div>
-            </div>
-        );
-    }
-
-    // Determine image URL to display (handles edit preview)
-    const displayImageUrl = isEditing ? (editImagePreview || null) : (profileData?.profilePictureUrl || null);
 
     return (
         <div>
             <NavBar />
             <div className="profile-container">
-                {/* Header: Picture, Name, Edit Button */}
-                <div className="profile-header">
-                     {!isSaving && ( // Only show button if not saving
+
+                {/* --- Redesigned Profile Info Section --- */}
+                <div className="profile-info-header">
+                     <div className={`profile-emoji-display ${isEditingProfile ? 'editable' : ''}`} onClick={isEditingProfile ? null : undefined}>
+                         {isEditingProfile ? (
+                             <input
+                                type="text"
+                                id="edit-emoji"
+                                className="emoji-input"
+                                value={editEmoji}
+                                onChange={(e) => setEditEmoji(e.target.value)}
+                                placeholder="👤"
+                                maxLength="2" // Limit input length roughly
+                                disabled={isSavingProfile}
+                              />
+                         ) : (
+                             <span>{profileData?.profileEmoji || '👤'}</span>
+                         )}
+                     </div>
+
+                     <div className="profile-name-major">
+                         {isEditingProfile ? (
+                            <>
+                                <input type="text" id="edit-name" className="name-input" value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Your Name" disabled={isSavingProfile} />
+                                <input type="text" id="edit-major" className="major-input" value={editMajor} onChange={(e) => setEditMajor(e.target.value)} placeholder="Your Major" disabled={isSavingProfile}/>
+                            </>
+                         ) : (
+                             <>
+                                 <h2 className="profile-name">{profileData?.name || 'User Name'}</h2>
+                                 <p className="profile-major-text">{profileData?.major || 'Major Not Set'}</p>
+                             </>
+                         )}
+                     </div>
+
+                      {!isSavingProfile && (
                         <button onClick={handleEditToggle} className="edit-profile-button">
-                            {isEditing ? 'Cancel' : 'Edit Profile'}
+                            {isEditingProfile ? 'Cancel' : 'Edit Profile'}
                         </button>
                      )}
-                    <div className="profile-picture-container" onClick={triggerFileInput}>
-                        <div className={`profile-picture ${isEditing ? 'editable' : ''}`}>
-                            {displayImageUrl ? (
-                                <img src={displayImageUrl} alt="Profile" />
+                </div>
+
+                <div className="profile-bio-section">
+                     {isEditingProfile ? (
+                        <>
+                            <label htmlFor="edit-bio">About Me</label>
+                            <textarea id="edit-bio" className="bio-input" value={editBio} onChange={(e) => setEditBio(e.target.value)} placeholder="Tell us about yourself..." disabled={isSavingProfile}/>
+                         </>
+                     ) : (
+                        <>
+                            {profileData?.bio ? (
+                                <p className="profile-bio">{profileData.bio}</p>
                             ) : (
-                                <div className="profile-picture-placeholder">[👤]</div>
+                                <p className="profile-bio placeholder">No bio information provided.</p>
                             )}
-                             {isEditing && (
-                                <div className="profile-picture-overlay">
-                                    Click to<br/>Change
-                                </div>
-                             )}
+                        </>
+                     )}
+                 </div>
+
+                 {isEditingProfile && (
+                     <div className="profile-form-actions">
+                         {profileError && <p className="profile-error edit-error">{profileError}</p>}
+                         <button onClick={handleProfileSave} className="save-button" disabled={isSavingProfile}>
+                             {isSavingProfile ? 'Saving...' : 'Save Profile Changes'}
+                         </button>
+                         {/* Cancel button is now the main toggle button */}
+                     </div>
+                 )}
+
+                {/* --- My Events Section (Remains Functionally Same) --- */}
+                <div className="profile-section my-events-section">
+                     <h3>My Created Events</h3>
+                     {eventsLoading && <div className="events-loading">Loading your events...</div>}
+                     {eventsError && <div className="events-error">{eventsError}</div>}
+                     {!eventsLoading && !eventsError && (
+                        <div className="my-events-list">
+                            {userEvents.length > 0 ? (
+                                userEvents.map(event => (
+                                    <div key={event.id} className={`my-event-card ${event.status === 'cancelled' ? 'cancelled' : ''}`}>
+                                        <div className="my-event-card-header">
+                                             <h4>{event.clubName} - <span className="event-purpose-small">{event.meetingPurpose}</span></h4>
+                                              {event.status === 'cancelled' && <span className="cancelled-badge">Cancelled</span>}
+                                        </div>
+
+                                        <p><strong>Location:</strong> {event.location}</p>
+                                        <p><strong>Time:</strong> {formatDateTime(event.meetingTime)}</p>
+                                        {event.tags && event.tags.length > 0 && (
+                                            <div className="my-event-tags">
+                                                 {event.tags.map(tag => <span key={tag} className="my-event-tag">{tag}</span>)}
+                                            </div>
+                                        )}
+                                        <div className="my-event-actions">
+                                             <button onClick={() => handleOpenEditModal(event)} className="event-action-button edit" disabled={eventsLoading}>Edit</button>
+                                             <button onClick={() => handleCancelEvent(event.id, event.status)} className={`event-action-button cancel ${event.status === 'cancelled' ? 'reactivate' : ''}`} disabled={eventsLoading}>
+                                                 {event.status === 'cancelled' ? 'Reactivate' : 'Cancel'}
+                                            </button>
+                                             <button onClick={() => handleDeleteEvent(event.id)} className="event-action-button delete" disabled={eventsLoading}>Delete</button>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="no-events-message">You haven't created any events yet.</p>
+                            )}
                         </div>
-                    </div>
-                     {/* Hidden Input */}
-                     <input
-                        type="file"
-                        accept="image/*"
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                        className="hidden-file-input"
-                        disabled={!isEditing || isSaving} // Disable if not editing or while saving
-                    />
-
-                    {/* Text Area next to Picture */}
-                    <div className="profile-header-text">
-                        {isEditing ? (
-                             <div>
-                                <label htmlFor="name">Name</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    className="name-input" // Optional specific class
-                                    value={editName}
-                                    onChange={(e) => setEditName(e.target.value)}
-                                    placeholder="Your Name"
-                                    disabled={isSaving}
-                                />
-                            </div>
-                        ) : (
-                            <h2 className="profile-name">{profileData?.name || 'User Name'}</h2>
-                        )}
-                    </div>
+                     )}
                 </div>
 
-                {/* Major Section */}
-                 <div className="profile-section">
-                    <h3>Major</h3>
-                     {isEditing ? (
-                         <div className="profile-form">
-                            {/* Removed label as it's implied by section heading */}
-                            <input
-                                type="text"
-                                id="major" // keep id for potential label association if needed later
-                                value={editMajor}
-                                onChange={(e) => setEditMajor(e.target.value)}
-                                placeholder="Your Major"
-                                disabled={isSaving}
-                            />
-                         </div>
-                    ) : (
-                        <p className="profile-major-text">{profileData?.major || 'Major Not Set'}</p>
-                    )}
-                </div>
-
-
-                {/* Bio Section */}
-                <div className="profile-section">
-                    <h3>About Me</h3>
-                    {isEditing ? (
-                         <div className="profile-form">
-                             {/* Removed label as it's implied by section heading */}
-                            <textarea
-                                id="bio" // keep id for potential label association if needed later
-                                value={editBio}
-                                onChange={(e) => setEditBio(e.target.value)}
-                                placeholder="Tell us about yourself..."
-                                disabled={isSaving}
-                            />
-
-                             {/* Display error message during editing if any */}
-                             {error && <p className="profile-error" style={{ textAlign: 'left', padding: '10px 0', color: '#f87171' }}>Error: {error}</p>}
-
-                            {/* Save/Cancel Buttons */}
-                            <div className="form-actions">
-                                <button onClick={handleSave} className="save-button" disabled={isSaving}>
-                                    {isSaving ? 'Saving...' : 'Save Changes'}
-                                </button>
-                                <button onClick={handleEditToggle} className="cancel-button" disabled={isSaving}>
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    ) : (
-                        <p className="profile-bio">{profileData?.bio || 'No bio information provided.'}</p>
-                    )}
-                </div>
             </div>
+             <EditEventModal
+                event={editingEvent}
+                isOpen={isEditModalOpen}
+                onClose={handleCloseEditModal}
+                onSave={handleSaveChanges}
+            />
         </div>
     );
 }

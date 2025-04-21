@@ -1,0 +1,214 @@
+.create-event-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.create-event-card {
+  background-color: #1f2937;
+  padding: 40px 50px;
+  border-radius: 10px;
+  border: 1px solid #374151;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 750px; /* Increased max-width slightly */
+}
+
+.create-event-title {
+  font-family: "Jost", sans-serif;
+  font-size: 2em;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 30px;
+  text-align: center;
+  border-bottom: 2px solid #FA4616;
+  padding-bottom: 15px;
+}
+
+.create-event-form {
+  width: 100%;
+  text-align: left;
+}
+
+.create-event-form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #9ca3af;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.create-event-form input[type="text"],
+.create-event-form input[type="datetime-local"],
+.create-event-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #4b5563;
+  background-color: #374151;
+  color: #e5e7eb;
+  border-radius: 6px;
+  font-size: 1em;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: inherit;
+}
+
+.create-event-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+
+.create-event-form input:focus,
+.create-event-form textarea:focus {
+  outline: none;
+  border-color: #FA4616;
+  box-shadow: 0 0 0 3px rgba(250, 70, 22, 0.2);
+}
+
+/* --- Tag Section Styling --- */
+.tags-section {
+    margin-top: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #4b5563;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #2a3a4a; /* Slightly different background */
+}
+
+.tags-main-label {
+    font-family: "Jost", sans-serif;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #e5e7eb;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #4b5563;
+}
+
+.tag-category {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #374151; /* Separator between categories */
+    padding-bottom: 10px;
+}
+.tag-category:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.tag-category-summary {
+    font-weight: 600;
+    color: #c5cdd8;
+    cursor: pointer;
+    padding: 8px 0;
+    font-size: 1.05em;
+    list-style: none; /* Remove default marker */
+    position: relative;
+    padding-left: 20px;
+}
+
+.tag-category-summary::-webkit-details-marker {
+    display: none; /* Hide default marker in Chrome/Safari */
+}
+
+.tag-category-summary::before { /* Custom marker */
+    content: '+';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2em;
+    color: #9ca3af;
+    transition: transform 0.2s ease-in-out;
+}
+
+.tag-category[open] > .tag-category-summary::before {
+    content: '−'; /* Use minus sign when open */
+    transform: translateY(-50%);
+}
+
+
+.tag-category-content {
+    padding: 15px 0 5px 15px; /* Indent content */
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Space between checkboxes */
+}
+
+.tag-checkbox-item {
+    display: flex;
+    align-items: center;
+}
+
+.tag-checkbox-item input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+    accent-color: #FA4616;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.tag-checkbox-item label {
+    margin-bottom: 0;
+    color: #d1d5db;
+    font-size: 0.95em;
+    font-weight: 400; /* Lighter weight for tags */
+    cursor: pointer;
+    user-select: none;
+}
+/* --- End Tag Section Styling --- */
+
+
+.submit-event-button {
+  width: 100%;
+  padding: 14px 25px;
+  margin-top: 20px; /* Adjusted margin */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "Jost", sans-serif;
+  font-size: 1.1em;
+  font-weight: 600;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+  background-color: #FA4616;
+  color: #ffffff;
+}
+
+.submit-event-button:hover {
+  background-color: #d83c0f;
+}
+
+.submit-event-button:disabled {
+    background-color: #6b7280;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.form-error {
+  color: #f87171;
+  font-size: 0.9em;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  text-align: center;
+  background-color: rgba(248, 113, 113, 0.1);
+  border: 1px solid #f87171;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.form-success {
+  color: #34d399; /* Green */
+  font-size: 0.9em;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  text-align: center;
+   background-color: rgba(52, 211, 153, 0.1);
+  border: 1px solid #34d399;
+  padding: 10px;
+  border-radius: 4px;
+}
