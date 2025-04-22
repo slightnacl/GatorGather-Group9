@@ -1,0 +1,67 @@
+.flex-container {
+    display: flex;
+}
+
+.center-h {
+    justify-content: center;
+}
+
+.center-v {
+    align-content: center;
+}
+
+.header-bar {
+    position: sticky;
+    top: 0;
+    justify-content: space-between;
+    background-image: linear-gradient(rgba(231, 88, 34, 100), rgba(231, 88, 34, 0));
+    height: 160px;
+}
+
+#header-title-log {
+    font-family: "Jost", sans-serif;
+    font-size: 70px;
+    font-style: italic;
+    font-weight: 900;
+    color: white;
+    text-shadow: 1px 2px 1px rgb(16, 73, 148);
+}
+
+.landing-button {
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    transform: translate(-50%, 0%);
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.login-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -44%);
+    height: 70%;
+    width: 35%;
+    min-width: 650px;
+    border: 10px solid;
+    border-color: rgba(231, 88, 34);
+    border-radius: 100px;
+    background-color: rgb(239, 246, 255);
+    flex-direction: column;
+    align-items: center;
+}
+
+#login-button {
+    font-family: "Jost", sans-serif;
+    font-weight: bold;
+    color: rgb(16, 73, 148);
+    font-size: 40px;
+    position: absolute;
+    bottom: 70px;
+    width: 80%;
+    height: 100px;
+    border-color: rgb(16, 73, 148);
+    border-width: 6px;
+    border-radius: 80px;
+}

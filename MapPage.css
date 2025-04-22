@@ -1,0 +1,48 @@
+/* src/MapPage.css */
+
+.map-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent scrolling of the page itself */
+}
+
+.map-page-content {
+  flex-grow: 1; /* Allow content to fill remaining space */
+  position: relative; /* For potential overlays later */
+  display: flex; /* Use flex if adding sidebars later */
+}
+
+.map-container-full {
+  height: 100%; /* Fill the content area height */
+  width: 100%; /* Fill the content area width */
+  background-color: #4b5563; /* Placeholder background */
+}
+
+/* Styling for the InfoWindow content */
+.map-infowindow {
+    font-family: "Jost", sans-serif;
+    color: #333; /* Darker text for info window */
+    max-width: 250px; /* Limit width */
+}
+
+.map-infowindow h4 {
+    margin: 0 0 8px 0;
+    font-size: 1.1em;
+    color: #FA4616; /* Use accent color */
+    font-weight: 600;
+}
+
+.map-infowindow p {
+    margin: 4px 0;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.map-infowindow strong {
+    font-weight: 600;
+    color: #555;
+}
+
+/* Optional: Hide default close button if using custom close logic later */
+/* .gm-style-iw button[aria-label="Close"] { display: none !important; } */

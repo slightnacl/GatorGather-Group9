@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
+.landing-page {
+  font-family: "Jost", sans-serif;
+  color: #d1d5db;
+  background-color: #111827;
+  background-image: linear-gradient(to bottom, #1a2a45, #111827);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #111827;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #374151;
+  height: 75px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.landing-brand {
+  font-family: "Jost", sans-serif;
+  font-size: 1.9em;
+  font-weight: 700;
+  font-style: italic;
+  color: #00529B;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.landing-brand:hover {
+    color: #FA4616;
+}
+
+.landing-brand span {
+    color: #FA4616;
+    transition: color 0.3s ease;
+}
+.landing-brand:hover span {
+    color: #00529B;
+}
+
+.landing-header-buttons {
+  display: flex;
+  gap: 35px;
+}
+
+.landing-button {
+  font-family: "Jost", sans-serif;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.landing-login-button {
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+.landing-login-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+.landing-register-button {
+  background-color: #FA4616;
+  color: #ffffff;
+  border: 2px solid #FA4616;
+}
+
+.landing-register-button:hover {
+  background-color: #d83c0f;
+  border-color: #d83c0f;
+}
+
+.landing-hero {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 40px;
+  background: linear-gradient(rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.9)), url(reitz-student-union-uf.jpeg) no-repeat center center;
+  background-size: cover;
+  min-height: calc(100vh - 75px);
+}
+
+.hero-title {
+  font-size: 3.5em;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-title .orange {
+  color: #FA4616;
+}
+.hero-title .blue {
+    color: #42A5F5;
+}
+
+.hero-subtitle {
+  font-size: 1.5em;
+  font-weight: 400;
+  color: #e5e7eb;
+  max-width: 700px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.hero-cta-button {
+  font-size: 1.2em;
+  padding: 15px 40px !important;
+  background-color: #FA4616;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.hero-cta-button:hover {
+  background-color: #d83c0f;
+}
+
+.landing-footer {
+  padding: 20px 40px;
+  background-color: #111827;
+  text-align: center;
+  font-size: 0.9em;
+  color: #6b7280;
+  border-top: 1px solid #374151;
+}
