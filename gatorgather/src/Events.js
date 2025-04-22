@@ -5,19 +5,20 @@ import NavBar from './NavBar';
 import './Events.css';
 
 function Events() {
-    const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [events, setEvents] = useState([]);                               // All events
+    const [loading, setLoading] = useState(true);                           // Page loading state
     const [error, setError] = useState(null);
-    const [selectedTags, setSelectedTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);                   // Currently selected tags for filtering
     const [allTags, setAllTags] = useState([]);
-    const [isFilterVisible, setIsFilterVisible] = useState(false);
-    const [followedEventIds, setFollowedEventIds] = useState(new Set());
+    const [isFilterVisible, setIsFilterVisible] = useState(false);          // Toggle filter panel
+    const [followedEventIds, setFollowedEventIds] = useState(new Set());    // Event IDs the user has followed
     const [profileError, setProfileError] = useState(null);
 
     const auth = getAuth();
     const db = getFirestore();
     const user = auth.currentUser;
 
+    // Fetches the user's followed events once, reused across useEffect
     const fetchFollowedEvents = useCallback(async () => {
         if (user) {
             setProfileError(null);
@@ -37,6 +38,7 @@ function Events() {
         }
     }, [user, db]);
 
+    // Initial load: get events and user's followed status
     useEffect(() => {
         const fetchInitialData = async () => {
             setLoading(true);
@@ -73,7 +75,7 @@ function Events() {
         fetchInitialData();
     }, [fetchFollowedEvents]);
 
-
+    // Handler used to follow an event
     const handleFollow = async (eventId) => {
         if (!user) return;
         const userDocRef = doc(db, "users", user.uid);
@@ -87,6 +89,7 @@ function Events() {
         }
     };
 
+    // Handler used to unfollow an event
     const handleUnfollow = async (eventId) => {
         if (!user) return;
         const userDocRef = doc(db, "users", user.uid);
@@ -104,6 +107,7 @@ function Events() {
         }
     };
 
+    // Handle tag selection toggle
     const handleTagFilterChange = (event) => {
         const { value, checked } = event.target;
         setSelectedTags(prevTags =>

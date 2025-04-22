@@ -5,6 +5,7 @@ import NavBar from './NavBar';
 import './CreateEvent.css';
 
 function CreateEvent() {
+    // State variables to manage form input and UI
     const [clubName, setClubName] = useState('');
     const [meetingPurpose, setMeetingPurpose] = useState('');
     const [location, setLocation] = useState('');
@@ -19,6 +20,7 @@ function CreateEvent() {
     const auth = getAuth();
 
     const categorizedTags = {
+        // The type of event
         'Event Type': [
             'Study Group',
             'Club Meeting',
@@ -29,11 +31,13 @@ function CreateEvent() {
             'Performance/Show',
             'Sports/Recreation',
         ],
+        // The medium for the event
         'Event Format': [
             'In-Person',
             'Online/Virtual',
             'Hybrid',
         ],
+        // Tags specifiying a particular college/study within the University
         'Academic Focus': [
             'College of Agricultural and Life Sciences',
             'College of the Arts',
@@ -53,6 +57,7 @@ function CreateEvent() {
             'College of Veterinary Medicine',
             'General Interest',
         ],
+        // Extra tags
         'Miscellaneous': [
             'Free Food',
             'Networking Opportunity',
@@ -61,6 +66,7 @@ function CreateEvent() {
         ]
     };
 
+    // Handle updates to the tags list when checkboxes are toggled
     const handleTagChange = (event) => {
         const { value, checked } = event.target;
         setTags(prevTags =>
@@ -68,9 +74,9 @@ function CreateEvent() {
         );
     };
 
-
+    // Handle form submission
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault();     // Prevent default form submission behavior
         setError('');
         setSuccess('');
         setLoading(true);
@@ -82,6 +88,7 @@ function CreateEvent() {
             return;
         }
 
+        // Input validation for required fields
         if (!clubName || !meetingPurpose || !location || !meetingTime) {
              setError("Please fill in all required fields (Club Name, Purpose, Location, Time).");
              setLoading(false);
@@ -89,6 +96,7 @@ function CreateEvent() {
         }
 
         try {
+            // Add the event to Firestore
             const eventsCollectionRef = collection(db, 'events');
             await addDoc(eventsCollectionRef, {
                 clubName: clubName,
@@ -102,6 +110,7 @@ function CreateEvent() {
                 createdAt: serverTimestamp()
             });
 
+            // Reset form and show success message
             setSuccess('Event created successfully!');
             setClubName('');
             setMeetingPurpose('');
