@@ -10,7 +10,7 @@ function EventFeed() {
 
     const auth = getAuth();
     const db = getFirestore();
-    const user = auth.currentUser;
+    const user = auth.currentUser;  // Current logged-in user
 
     useEffect(() => {
         const fetchFollowedEventsDetails = async () => {
@@ -33,6 +33,7 @@ function EventFeed() {
                     followedIds = docSnap.data().followedEvents || [];
                 }
 
+                // If found, extract followed event IDs
                 if (followedIds.length === 0) {
                     setFollowedEvents([]);
                     setLoading(false);
@@ -50,11 +51,13 @@ function EventFeed() {
                 const q = query(eventsRef, where(documentId(), 'in', followedIds));
 
                 const eventDocsSnapshot = await getDocs(q);
+                // Extract event data from Firestore documents
                 let fetchedEventsData = eventDocsSnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
 
+                // Sort events by time (soonest first)
                 fetchedEventsData.sort((a, b) => {
                      const timeA = a.meetingTime instanceof Timestamp ? a.meetingTime.toMillis() : (new Date(a.meetingTime)).getTime();
                      const timeB = b.meetingTime instanceof Timestamp ? b.meetingTime.toMillis() : (new Date(b.meetingTime)).getTime();
@@ -82,11 +85,12 @@ function EventFeed() {
         fetchFollowedEventsDetails();
     }, [user, db]);
 
+    // Format the meeting time to a human-readable string
     const formatDateTime = (timeInput) => {
         if (!timeInput) return 'Time TBD';
         let date;
         if (timeInput instanceof Timestamp) {
-            date = timeInput.toDate();
+            date = timeInput.toDate();  // Convert Firestore timestamp
         } else if (typeof timeInput === 'string') {
             try { date = new Date(timeInput); } catch { date = null; }
         } else { date = null; }
